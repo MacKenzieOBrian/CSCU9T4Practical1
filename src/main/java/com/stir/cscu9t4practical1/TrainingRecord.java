@@ -1,43 +1,52 @@
-// An implementation of a Training Record as an ArrayList
 package com.stir.cscu9t4practical1;
 
-
-
-
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrainingRecord {
-    private List<Entry> tr;
-    
+    private List<TrainingSession> tr;
+
     public TrainingRecord() {
-        tr = new ArrayList<Entry>();
+        tr = new ArrayList<>();
     } //constructor
-    
+
     // add a record to the list
-   public void addEntry(Entry e){
-       tr.add(e);    
-   } // addClass
-   
-   // look up the entry of a given day and month
-   public String lookupEntry (int d, int m, int y) {
-       ListIterator<Entry> iter = tr.listIterator();
-       String result = "No entries found";
-       while (iter.hasNext()) {
-          Entry current = iter.next();
-          if (current.getDay()==d && current.getMonth()==m && current.getYear()==y) 
-             result = current.getEntry();
+    public void addTrainingSession(TrainingSession ts) {
+        // Check if the training session already exists in the list
+        boolean sessionExists = tr.stream()
+                .anyMatch(session -> session.getDay() == ts.getDay() &&
+                        session.getMonth() == ts.getMonth() &&
+                        session.getYear() == ts.getYear());
+
+        if (sessionExists) {
+            System.out.println("Training session already exists for this day, month, and year.");
+        } else {
+            // If the training session is unique, add it to the list
+            tr.add(ts);
+        }
+    }
+
+    // look up the training session of a given day, month, and year
+    public String lookupTrainingSession(int d, int m, int y) {
+        StringBuilder result = new StringBuilder("No training sessions found");
+        for (TrainingSession session : tr) {
+            if (session.getDay() == d && session.getMonth() == m && session.getYear() == y) {
+                if (result.toString().equals("No training sessions found")) {
+                    result = new StringBuilder(session.getTrainingSessionDetails());
+                } else {
+                    result.append("\n").append(session.getTrainingSessionDetails());
+                }
             }
-       return result;
-   } // lookupEntry
-   
-   // Count the number of entries
-   public int getNumberOfEntries(){
-       return tr.size();
-   }
-   // Clear all entries
-   public void clearAllEntries(){
-       tr.clear();
-   }
-   
+        }
+        return result.toString();
+    }
+
+    // Clear all training sessions
+    public void clearAllTrainingSessions(){
+        tr.clear();
+    }
+
+    public short getNumberOfTrainingSessions() {
+        return (short)tr.size();
+    }
 } // TrainingRecord

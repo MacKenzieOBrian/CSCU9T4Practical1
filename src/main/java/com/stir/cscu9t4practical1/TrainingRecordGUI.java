@@ -1,144 +1,136 @@
 // GUI and main program for the Training Record
 package com.stir.cscu9t4practical1;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
 import javax.swing.*;
-import java.lang.Number;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class TrainingRecordGUI extends JFrame implements ActionListener {
 
-    private JTextField name = new JTextField(30);
-    private JTextField day = new JTextField(2);
-    private JTextField month = new JTextField(2);
-    private JTextField year = new JTextField(4);
-    private JTextField hours = new JTextField(2);
-    private JTextField mins = new JTextField(2);
-    private JTextField secs = new JTextField(2);
-    private JTextField dist = new JTextField(4);
-    private JLabel labn = new JLabel(" Name:");
-    private JLabel labd = new JLabel(" Day:");
-    private JLabel labm = new JLabel(" Month:");
-    private JLabel laby = new JLabel(" Year:");
-    private JLabel labh = new JLabel(" Hours:");
-    private JLabel labmm = new JLabel(" Mins:");
-    private JLabel labs = new JLabel(" Secs:");
-    private JLabel labdist = new JLabel(" Distance (km):");
-    private JButton addR = new JButton("Add");
-    private JButton lookUpByDate = new JButton("Look Up");
+    private JButton addRun = new JButton("Add Run");
+    private JButton addSwim = new JButton("Add Swim");
+    private JButton addCycle = new JButton("Add Cycle");
+    private JButton lookUpByDate = new JButton("Look Up Date");
 
-    private TrainingRecord myAthletes = new TrainingRecord();
+    private JTextField nameField = new JTextField(30);
+    private JTextField dayField = new JTextField(2);
+    private JTextField monthField = new JTextField(2);
+    private JTextField yearField = new JTextField(4);
+    private JTextField hoursField = new JTextField(2);
+    private JTextField minsField = new JTextField(2);
+    private JTextField secsField = new JTextField(2);
+    private JTextField distField = new JTextField(4);
 
     private JTextArea outputArea = new JTextArea(5, 50);
+
+    private TrainingRecord myAthletes = new TrainingRecord();
 
     public static void main(String[] args) {
         TrainingRecordGUI applic = new TrainingRecordGUI();
     } // main
 
-    // set up the GUI 
+    // set up the GUI
     public TrainingRecordGUI() {
         super("Training Record");
         setLayout(new FlowLayout());
-        add(labn);
-        add(name);
-        name.setEditable(true);
-        add(labd);
-        add(day);
-        day.setEditable(true);
-        add(labm);
-        add(month);
-        month.setEditable(true);
-        add(laby);
-        add(year);
-        year.setEditable(true);
-        add(labh);
-        add(hours);
-        hours.setEditable(true);
-        add(labmm);
-        add(mins);
-        mins.setEditable(true);
-        add(labs);
-        add(secs);
-        secs.setEditable(true);
-        add(labdist);
-        add(dist);
-        dist.setEditable(true);
-        add(addR);
-        addR.addActionListener(this);
+
+        add(new JLabel(" Name:"));
+        add(nameField);
+        nameField.setEditable(true);
+
+        add(new JLabel(" Day:"));
+        add(dayField);
+        dayField.setEditable(true);
+
+        add(new JLabel(" Month:"));
+        add(monthField);
+        monthField.setEditable(true);
+
+        add(new JLabel(" Year:"));
+        add(yearField);
+        yearField.setEditable(true);
+
+        add(new JLabel(" Hours:"));
+        add(hoursField);
+        hoursField.setEditable(true);
+
+        add(new JLabel(" Mins:"));
+        add(minsField);
+        minsField.setEditable(true);
+
+        add(new JLabel(" Secs:"));
+        add(secsField);
+        secsField.setEditable(true);
+
+        add(new JLabel(" Distance (km):"));
+        add(distField);
+        distField.setEditable(true);
+
+        add(addRun);
+        addRun.addActionListener(this);
+
+        add(addSwim);
+        addSwim.addActionListener(this);
+
+        add(addCycle);
+        addCycle.addActionListener(this);
+
         add(lookUpByDate);
         lookUpByDate.addActionListener(this);
+
         add(outputArea);
         outputArea.setEditable(false);
+
         setSize(720, 200);
         setVisible(true);
-        blankDisplay();
 
-        // To save typing in new entries while testing, uncomment
-        // the following lines (or add your own test cases)
-        
+        blankDisplay();
     } // constructor
 
-    // listen for and respond to GUI events 
+    // listen for and respond to GUI events
+    // listen for and respond to GUI events
     public void actionPerformed(ActionEvent event) {
         String message = "";
-        if (event.getSource() == addR) {
-            message = addEntry("generic");
-        }
-        if (event.getSource() == lookUpByDate) {
-            message = lookupEntry();
+        if (event.getSource() == addRun) {
+            message = addTrainingSession("run", Integer.parseInt(dayField.getText()), Integer.parseInt(monthField.getText()), Integer.parseInt(yearField.getText()), Integer.parseInt(hoursField.getText()), Integer.parseInt(minsField.getText()), Integer.parseInt(secsField.getText()), Float.parseFloat(distField.getText()));
+        } else if (event.getSource() == addSwim) {
+            message = addTrainingSession("swim", Integer.parseInt(dayField.getText()), Integer.parseInt(monthField.getText()), Integer.parseInt(yearField.getText()), Integer.parseInt(hoursField.getText()), Integer.parseInt(minsField.getText()), Integer.parseInt(secsField.getText()), Float.parseFloat(distField.getText()));
+        } else if (event.getSource() == addCycle) {
+            message = addTrainingSession("cycle",Integer.parseInt(dayField.getText()), Integer.parseInt(monthField.getText()), Integer.parseInt(yearField.getText()), Integer.parseInt(hoursField.getText()), Integer.parseInt(minsField.getText()), Integer.parseInt(secsField.getText()), Float.parseFloat(distField.getText()));
+        } else if (event.getSource() == lookUpByDate) {
+            message = lookupTrainingSession();
         }
         outputArea.setText(message);
         blankDisplay();
     } // actionPerformed
 
-    public String addEntry(String what) {
-        String message = "Record added\n";
-        System.out.println("Adding "+what+" entry to the records");
-        String n = name.getText();
-        int m = Integer.parseInt(month.getText());
-        int d = Integer.parseInt(day.getText());
-        int y = Integer.parseInt(year.getText());
-        float km = java.lang.Float.parseFloat(dist.getText());
-        int h = Integer.parseInt(hours.getText());
-        int mm = Integer.parseInt(mins.getText());
-        int s = Integer.parseInt(secs.getText());
-        Entry e = new Entry(n, d, m, y, h, mm, s, km);
-        myAthletes.addEntry(e);
-        return message;
-    }
-    
-    public String lookupEntry() {
-        int m = Integer.parseInt(month.getText());
-        int d = Integer.parseInt(day.getText());
-        int y = Integer.parseInt(year.getText());
-        outputArea.setText("looking up record ...");
-        String message = myAthletes.lookupEntry(d, m, y);
-        return message;
+    // add a new training session to the training record
+    public String addTrainingSession( String name, int day, int month, int year, int hours, int minutes, int seconds, float dist) {
+        TrainingSession session = new TrainingSession(name, day, month, year, hours, minutes, seconds, dist);
+        myAthletes.addTrainingSession(session);
+        return "Training session added successfully.";
     }
 
+    // look up a training session in the training record
+    public String lookupTrainingSession() {
+        int m = Integer.parseInt(monthField.getText());
+        int d = Integer.parseInt(dayField.getText());
+        int y = Integer.parseInt(yearField.getText());
+        outputArea.setText("looking up training session ...");
+        String message = myAthletes .lookupTrainingSession(d, m, y);
+        return message;
+    } // lookupTrainingSession
+
+    // clear the display
     public void blankDisplay() {
-        name.setText("");
-        day.setText("");
-        month.setText("");
-        year.setText("");
-        hours.setText("");
-        mins.setText("");
-        secs.setText("");
-        dist.setText("");
-
-    }// blankDisplay
-    // Fills the input fields on the display for testing purposes only
-    public void fillDisplay(Entry ent) {
-        name.setText(ent.getName());
-        day.setText(String.valueOf(ent.getDay()));
-        month.setText(String.valueOf(ent.getMonth()));
-        year.setText(String.valueOf(ent.getYear()));
-        hours.setText(String.valueOf(ent.getHour()));
-        mins.setText(String.valueOf(ent.getMin()));
-        secs.setText(String.valueOf(ent.getSec()));
-        dist.setText(String.valueOf(ent.getDistance()));
-    }
-
+        nameField.setText("");
+        dayField.setText("");
+        monthField.setText("");
+        yearField.setText("");
+        hoursField.setText("");
+        minsField.setText("");
+        secsField.setText("");
+        distField.setText("");
+    } // blankDisplay
 } // TrainingRecordGUI
-
